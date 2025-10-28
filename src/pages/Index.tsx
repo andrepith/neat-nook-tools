@@ -1,9 +1,11 @@
-import { Search, Image, FileText, Calculator, Archive, Sparkles, TrendingUp } from "lucide-react";
+import { Search, Image, FileText, Calculator, Archive, Sparkles, TrendingUp, ChevronRight, ArrowRight } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ToolCard from "@/components/ToolCard";
+import AdSpace from "@/components/AdSpace";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   const categories = [
@@ -171,7 +173,7 @@ const Index = () => {
             </p>
 
             {/* Hero Search */}
-            <div className="relative max-w-2xl mx-auto">
+            <div className="relative max-w-2xl mx-auto mb-8">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input 
                 placeholder="Find a tool... (e.g., 'image compressor')" 
@@ -184,6 +186,11 @@ const Index = () => {
                 Search
               </Button>
             </div>
+
+            {/* Ad Banner */}
+            <div className="max-w-3xl mx-auto">
+              <AdSpace size="leaderboard" />
+            </div>
           </div>
         </section>
 
@@ -195,10 +202,20 @@ const Index = () => {
               <h2 className="text-3xl font-bold">Popular Tools</h2>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
               {popularTools.map((tool, index) => (
                 <ToolCard key={index} {...tool} />
               ))}
+            </div>
+
+            <div className="text-center">
+              <Link 
+                to="/popular" 
+                className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+              >
+                View all popular tools
+                <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
           </div>
         </section>
@@ -211,10 +228,14 @@ const Index = () => {
             <div className="space-y-16">
               {categories.map((category) => (
                 <div key={category.id} id={category.id}>
-                  <h3 className="text-2xl font-semibold mb-6 flex items-center gap-3">
+                  <Link 
+                    to={`/category/${category.id}`}
+                    className="group inline-flex items-center gap-3 mb-6 hover:opacity-80 transition-opacity"
+                  >
                     <span className="w-2 h-8 bg-primary rounded-full"></span>
-                    {category.title}
-                  </h3>
+                    <h3 className="text-2xl font-semibold">{category.title}</h3>
+                    <ChevronRight className="h-5 w-5 text-primary group-hover:translate-x-1 transition-transform" />
+                  </Link>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {category.tools.map((tool, index) => (
                       <ToolCard key={index} {...tool} />
@@ -223,6 +244,13 @@ const Index = () => {
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* Ad Section Before Footer */}
+        <section className="py-12 px-4 bg-muted/20">
+          <div className="container mx-auto max-w-md">
+            <AdSpace size="medium-rectangle" className="mx-auto" />
           </div>
         </section>
       </main>

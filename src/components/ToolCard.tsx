@@ -8,13 +8,19 @@ interface ToolCardProps {
   description: string;
   href: string;
   category?: string;
+  isNew?: boolean;
 }
 
-const ToolCard = ({ icon: Icon, title, description, href, category }: ToolCardProps) => {
+const ToolCard = ({ icon: Icon, title, description, href, category, isNew }: ToolCardProps) => {
   return (
     <Link to={href}>
       <div className="group relative bg-card rounded-lg border p-6 hover:border-primary/50 transition-all duration-300 shadow-card hover:shadow-card-hover h-full flex flex-col">
-        {category && (
+        {isNew && (
+          <span className="absolute top-3 right-3 text-xs font-bold px-2.5 py-1 rounded-full bg-accent text-accent-foreground shadow-sm">
+            NEW
+          </span>
+        )}
+        {category && !isNew && (
           <span className="absolute top-3 right-3 text-xs font-medium px-2 py-1 rounded-full bg-secondary text-secondary-foreground">
             {category}
           </span>
