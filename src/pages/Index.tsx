@@ -1,11 +1,16 @@
-import { Search, Image, FileText, Calculator, Archive, Sparkles, TrendingUp, ChevronRight, ArrowRight } from "lucide-react";
+import { Search, Image, FileText, Calculator, Archive, Sparkles, TrendingUp, ChevronRight, ArrowRight, Lightbulb, Flame, Sparkle } from "lucide-react";
+import { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ToolCard from "@/components/ToolCard";
 import AdSpace from "@/components/AdSpace";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
   const categories = [
@@ -119,7 +124,7 @@ const Index = () => {
     },
   ];
 
-  const popularTools = [
+  const trendingTools = [
     {
       icon: FileText,
       title: "Case Converter",
@@ -149,6 +154,62 @@ const Index = () => {
       category: "File"
     },
   ];
+
+  const newTools = [
+    {
+      icon: Image,
+      title: "Image Resizer",
+      description: "Resize images to any dimension quickly",
+      href: "/tool/image-resizer",
+      category: "Image",
+      isNew: true
+    },
+    {
+      icon: FileText,
+      title: "Word Counter",
+      description: "Count words, characters, and lines in text",
+      href: "/tool/word-counter",
+      category: "Text",
+      isNew: true
+    },
+    {
+      icon: Calculator,
+      title: "Percentage Calculator",
+      description: "Calculate percentages, increases, and decreases",
+      href: "/tool/percentage-calculator",
+      category: "Math",
+      isNew: true
+    },
+    {
+      icon: Archive,
+      title: "ZIP Extractor",
+      description: "Extract files from ZIP archives online",
+      href: "/tool/zip-extractor",
+      category: "File",
+      isNew: true
+    },
+  ];
+
+  const { toast } = useToast();
+  const [requestForm, setRequestForm] = useState({
+    name: "",
+    email: "",
+    description: ""
+  });
+  const [requestSubmitted, setRequestSubmitted] = useState(false);
+
+  const handleRequestSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setRequestSubmitted(true);
+    toast({
+      title: "✅ Thanks! We'll review your suggestion.",
+      description: "We appreciate your feedback and will consider your tool request.",
+    });
+    setTimeout(() => {
+      setRequestForm({ name: "", email: "", description: "" });
+      setRequestSubmitted(false);
+    }, 3000);
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -194,29 +255,53 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Popular Tools Section */}
+        {/* Popular Tools Section with Tabs */}
         <section id="popular" className="py-16 px-4 bg-muted/30">
           <div className="container mx-auto">
-            <div className="flex items-center gap-2 mb-8">
-              <TrendingUp className="h-6 w-6 text-primary" />
-              <h2 className="text-3xl font-bold">Popular Tools</h2>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-              {popularTools.map((tool, index) => (
-                <ToolCard key={index} {...tool} />
-              ))}
-            </div>
+            <Tabs defaultValue="trending" className="w-full">
+              <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="h-6 w-6 text-primary" />
+                  <h2 className="text-3xl font-bold">Popular Tools</h2>
+                </div>
+                <TabsList className="bg-background border shadow-sm">
+                  <TabsTrigger value="trending" className="gap-2">
+                    <Flame className="h-4 w-4" />
+                    Trending Tools
+                  </TabsTrigger>
+                  <TabsTrigger value="new" className="gap-2">
+                    <Sparkle className="h-4 w-4" />
+                    New Tools
+                  </TabsTrigger>
+                </TabsList>
+              </div>
 
-            <div className="text-center">
-              <Link 
-                to="/popular" 
-                className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
-              >
-                View all popular tools
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
+              <TabsContent value="trending" className="mt-0">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                  {trendingTools.map((tool, index) => (
+                    <ToolCard key={index} {...tool} />
+                  ))}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="new" className="mt-0">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                  {newTools.map((tool, index) => (
+                    <ToolCard key={index} {...tool} />
+                  ))}
+                </div>
+              </TabsContent>
+
+              <div className="text-center mt-6">
+                <Link 
+                  to="/popular" 
+                  className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+                >
+                  View all popular tools
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </Tabs>
           </div>
         </section>
 
@@ -243,6 +328,69 @@ const Index = () => {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Request a Tool Section */}
+        <section className="py-16 px-4 bg-muted/30">
+          <div className="container mx-auto max-w-2xl">
+            <div className="bg-card rounded-lg border p-8 shadow-card">
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center gap-2 text-primary mb-4">
+                  <Lightbulb className="h-8 w-8" />
+                </div>
+                <h2 className="text-3xl font-bold mb-3">💡 Request a Tool</h2>
+                <p className="text-muted-foreground">
+                  Didn't find what you're looking for? Suggest a tool you'd like us to build next.
+                </p>
+              </div>
+
+              {!requestSubmitted ? (
+                <form onSubmit={handleRequestSubmit} className="space-y-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Your Name (optional)</Label>
+                    <Input
+                      id="name"
+                      placeholder="John Doe"
+                      value={requestForm.name}
+                      onChange={(e) => setRequestForm({ ...requestForm, name: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Your Email (optional)</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="john@example.com"
+                      value={requestForm.email}
+                      onChange={(e) => setRequestForm({ ...requestForm, email: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="description">Describe the tool you want *</Label>
+                    <Textarea
+                      id="description"
+                      placeholder="I would like a tool that..."
+                      value={requestForm.description}
+                      onChange={(e) => setRequestForm({ ...requestForm, description: e.target.value })}
+                      required
+                      className="min-h-[120px]"
+                    />
+                  </div>
+
+                  <Button type="submit" className="w-full" size="lg">
+                    Submit Request
+                  </Button>
+                </form>
+              ) : (
+                <div className="text-center py-8">
+                  <div className="text-6xl mb-4">✅</div>
+                  <p className="text-xl font-semibold text-primary">Thanks! We'll review your suggestion.</p>
+                </div>
+              )}
             </div>
           </div>
         </section>
